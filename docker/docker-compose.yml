@@ -1,0 +1,29 @@
+name: containers-billing
+
+services:
+  postgres-billing:
+    image: postgres:15-alpine
+    container_name: billing-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: billingdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - billing-data:/var/lib/postgresql/data
+
+  rabbitmq:
+    image: rabbitmq:3.12-management-alpine
+    container_name: billing-rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"    # AMQP
+      - "15672:15672"  # Painel: http://localhost:15672
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+volumes:
+  billing-data:  # volume persistente para os dados do PostgreSQL
